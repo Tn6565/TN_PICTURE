@@ -12,7 +12,7 @@ import json
 # =========================
 st.set_page_config(
     page_title="Auto Stock Uploader",
-    page_icon="icon.png",  # 作成済みアイコンを使用
+    page_icon="TNICON.png",  # 作成済みアイコンを使用
     layout="wide"
 )
 
