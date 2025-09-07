@@ -11,7 +11,7 @@ import json
 # ページ設定（ファビコン & タイトル）
 # =========================
 # Chromeタブ用のアイコン（Web上でアクセス可能なURL推奨）
-CHROME_ICON_URL = "https://github.com/Tn6565/TN_PICTURE/blob/5112d49b987619b73a3183da4cfe232091dc68d3/icon.png/TNICON.png"
+CHROME_ICON_URL = "https://github.com/Tn6565/TN_PICTURE/blob/main/icon.png/TNICON.png?raw=true"
 
 st.set_page_config(
     page_title="Auto Stock Uploader",
@@ -19,11 +19,12 @@ st.set_page_config(
     layout="wide"
 )
 
+
 # =========================
 # iPhoneホーム画面用アイコン設定
 # =========================
-IPHONE_ICON_180 = "https://github.com/Tn6565/TN_PICTURE/blob/5112d49b987619b73a3183da4cfe232091dc68d3/icon.png/TNICON.png"
-IPHONE_ICON_152 = "https://github.com/Tn6565/TN_PICTURE/blob/5112d49b987619b73a3183da4cfe232091dc68d3/icon.png/TNICON.png"
+IPHONE_ICON_180 = "https://github.com/Tn6565/TN_PICTURE/blob/main/icon.png/TNICON.png?raw=true"
+IPHONE_ICON_152 = "https://github.com/Tn6565/TN_PICTURE/blob/main/icon.png/TNICON.png?raw=true"
 
 st.markdown(
     f"""
