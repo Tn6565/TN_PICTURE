@@ -10,10 +10,27 @@ import json
 # =========================
 # ページ設定（ファビコン & タイトル）
 # =========================
+# Chromeタブ用のアイコン（Web上でアクセス可能なURL推奨）
+CHROME_ICON_URL = "https://github.com/Tn6565/TN_PICTURE/blob/5112d49b987619b73a3183da4cfe232091dc68d3/icon.png/TNICON.png"
+
 st.set_page_config(
     page_title="Auto Stock Uploader",
-    page_icon="TNICON.png",  # 作成済みアイコンを使用
+    page_icon=CHROME_ICON_URL,
     layout="wide"
+)
+
+# =========================
+# iPhoneホーム画面用アイコン設定
+# =========================
+IPHONE_ICON_180 = "https://github.com/Tn6565/TN_PICTURE/blob/5112d49b987619b73a3183da4cfe232091dc68d3/icon.png/TNICON.png"
+IPHONE_ICON_152 = "https://github.com/Tn6565/TN_PICTURE/blob/5112d49b987619b73a3183da4cfe232091dc68d3/icon.png/TNICON.png"
+
+st.markdown(
+    f"""
+    <link rel="apple-touch-icon" sizes="180x180" href="{IPHONE_ICON_180}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{IPHONE_ICON_152}">
+    """,
+    unsafe_allow_html=True
 )
 
 # =========================
@@ -31,9 +48,6 @@ STOP_TAGS = {
     "robot", "artificial intelligence"
 }
 
-# =========================
-# 無料枠制限設定
-# =========================
 USAGE_FILE = "api_usage.json"
 MAX_REQUESTS_PER_HOUR = 50
 
@@ -44,14 +58,11 @@ def check_api_limit():
     else:
         with open(USAGE_FILE, "r") as f:
             usage = json.load(f)
-
     if now - usage["last_reset"] >= 3600:
         usage["last_reset"] = now
         usage["count"] = 0
-
     if usage["count"] >= MAX_REQUESTS_PER_HOUR:
         return False
-
     usage["count"] += 1
     with open(USAGE_FILE, "w") as f:
         json.dump(usage, f)
@@ -64,7 +75,6 @@ def analyze_market(keyword: str):
     if not check_api_limit():
         st.error("API無料枠を超えたため、使用不可です")
         st.stop()
-
     params = {
         "key": API_KEY,
         "q": keyword,
@@ -72,17 +82,13 @@ def analyze_market(keyword: str):
         "per_page": 100,
         "safesearch": "true"
     }
-
     response = requests.get(BASE_URL, params=params)
     if response.status_code != 200:
         return {"total_hits": 0, "popular_tags": [], "error": f"API failed: {response.status_code}"}
-
     data = response.json()
     total_hits = data.get("totalHits", 0)
-
     tags = []
     tag_to_image = {}
-
     for hit in data.get("hits", []):
         if "tags" in hit and hit["tags"]:
             for t in hit["tags"].split(","):
@@ -91,18 +97,15 @@ def analyze_market(keyword: str):
                     tags.append(t)
                     if t not in tag_to_image:
                         tag_to_image[t] = hit.get("previewURL", "")
-
     tag_counts = Counter(tags)
     popular_tags = tag_counts.most_common(5)
     popular_tag_images = [(t, tag_to_image[t], count) for t, count in popular_tags]
-
     return {"total_hits": total_hits, "popular_tags": popular_tag_images}
 
 def search_tag_images(tag: str):
     if not check_api_limit():
         st.error("API無料枠を超えたため、使用不可です")
         st.stop()
-
     params = {
         "key": API_KEY,
         "q": tag,
@@ -123,11 +126,9 @@ def display_api_usage():
     else:
         with open(USAGE_FILE, "r") as f:
             usage = json.load(f)
-
     now = int(time.time())
     if now - usage["last_reset"] >= 3600:
         usage["count"] = 0
-
     remaining = MAX_REQUESTS_PER_HOUR - usage["count"]
     st.sidebar.subheader("🔹 Pixabay API使用状況")
     st.sidebar.write(f"1時間あたり上限: {MAX_REQUESTS_PER_HOUR}")
@@ -171,17 +172,14 @@ if mode == "市場分析":
         with st.spinner("🔄 分析中..."):
             result = analyze_market(keyword)
             time.sleep(1)
-
         if result["total_hits"] == 0 or len(result["popular_tags"]) == 0:
             st.warning("検索結果が0件か、関連タグが見つかりません。ワードを変えて試してください。")
         else:
             st.subheader("📊 検索結果概要")
             st.write(f"総件数: {result['total_hits']}")
-
             st.subheader("🔖 人気タグトップ5")
             num_cols = 5
             show_buttons = []
-
             for i in range(0, len(result["popular_tags"]), num_cols):
                 cols = st.columns(num_cols)
                 for j, (tag, img_url, count) in enumerate(result["popular_tags"][i:i+num_cols]):
@@ -211,8 +209,6 @@ if mode == "市場分析":
                             unsafe_allow_html=True
                         )
                         show_buttons.append(tag)
-
-            # カード下に全ボタンを並べる
             st.subheader("🔘 タグを表示")
             for tag in show_buttons:
                 if st.button(f"{tag} を表示", key=f"show_{tag}"):
@@ -223,7 +219,6 @@ if mode == "市場分析":
                             st.image(url, width=200)
                     else:
                         st.info(f"{tag} に関する画像が見つかりませんでした。")
-
             st.subheader("📈 人気タグ件数グラフ")
             tags, _, counts = zip(*result["popular_tags"])
             fig, ax = plt.subplots(figsize=(6,4))
