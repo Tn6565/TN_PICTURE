@@ -8,6 +8,15 @@ import time
 import json
 
 # =========================
+# ページ設定（ファビコン & タイトル）
+# =========================
+st.set_page_config(
+    page_title="Auto Stock Uploader",
+    page_icon="icon.png",  # 作成済みアイコンを使用
+    layout="wide"
+)
+
+# =========================
 # 初期設定
 # =========================
 load_dotenv()
